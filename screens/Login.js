@@ -2,14 +2,28 @@ import React, { Component } from 'react';
 import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard} from 'react-native';
 import {Button, Text, Block, Input} from '../components';
 import {theme} from '../constants';
+import axios from 'axios';
 
 export default class Login extends Component{
     state={
-        id: '',
-        password: '',
+        users: "",
         errors: [],
         loading: false,
     }
+
+    componentDidMount(){
+        this.loadUserInfo();
+    }
+
+    loadUserInfo = async () => {
+        await axios.get('http://10.0.2.2:5000/api/users')
+        .then(res => {
+            const users = res.data;
+            this.setState({ users });
+            console.log(users);
+        })
+    }
+
 
     handleLogin = () => {
         const {navigation} = this.props;
@@ -19,7 +33,7 @@ export default class Login extends Component{
 
         Keyboard.dismiss(); // 키보드 사라짐
         setTimeout(() => {
-            if(id !=='seho100'){    // 임의의 아이디 seho100와 비교
+            if(id !==this.state.users[0]['userID']){    // 임의의 아이디 seho100와 비교
                 errors.push('id')
             }
             if(password !== 'sop8377'){ // 임의의 비밀번호 sop8377과 비교
