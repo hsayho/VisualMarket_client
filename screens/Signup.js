@@ -1,32 +1,64 @@
+import Axios from 'axios';
 import React, { Component } from 'react';
 import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, Alert} from 'react-native';
-
+import axios from 'axios';
 import {Button, Text, Block, Input} from '../components';
 import {theme} from '../constants';
 
 export default class Signup extends Component{
     state={
+        
         id: '',
         password: '',
         username: '',
-        email: '',
+        stu_id: '',
         errors: [],
         loading: false,
     }
 
-    handleSignup = () => {
+    handleSignup = async() => {
         const {navigation} = this.props;
-        const {id, username, password, email} = this.state;
+        const {id, username, password, stu_id} = this.state;
+        
         const errors = [];
         this.setState({ loading: true})
 
         Keyboard.dismiss(); // 키보드 사라짐
+
+        await axios.post('http://10.0.2.2:5000/api/signup', {
+            id: this.state.id,
+            stu_id: this.state.stu_id,
+            username: this.state.username,
+            password: this.state.password,
+        })
+        .then(function (res) {
+            if(res.data.status == 'error001'){
+                $('#userID').focus();
+            }
+            else if(res.data.status == 'error002'){
+                $('#userpassword').focus();
+            }
+            else if(res.data.status == 'error003'){
+                $('#username').focus();
+            }
+            else if(res.data.status == 'error004'){
+                $('#studnetID').focus();
+            }
+            else if(res.data.status == 'error005'){
+                alert('회원가입 실패');
+            }
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
         setTimeout(() => {
             if(!id){    // 임의의 아이디 seho100와 비교
                 errors.push('id')
             }
-            if(!email){
-                errors.push('email')
+            if(!stu_id){
+                errors.push('stu_id')
             }
             if(!username){
                 errors.push('username')
@@ -35,10 +67,11 @@ export default class Signup extends Component{
                 errors.push('password')
             }
 
-    
+            
+
             this.setState({ errors, loading: false});
     
-            if(!errors.length){
+            if(!errors.length){ 
                 Alert.alert(
                     '회원가입 완료!',
                     '가입한 계정으로 로그인해주세요!',
@@ -51,7 +84,7 @@ export default class Signup extends Component{
                     ],
                     {cancelable : false}
                 )
-                navigation.navigate('Browse');
+                
             } else{
                 Alert.alert(
                     '정보 불일치',
@@ -104,11 +137,11 @@ export default class Signup extends Component{
                         />
                         <Input
                             email
-                            error={hasErrors('email')}
-                            label="email"
-                            style={[styles.input, hasErrors('email')]}
-                            defaultValue={this.state.email}
-                            onChangeText={text => this.setState({ email: text})}
+                            error={hasErrors('stu_id')}
+                            label="Student Number"
+                            style={[styles.input, hasErrors('stu_id')]}
+                            defaultValue={this.state.stu_id}
+                            onChangeText={text => this.setState({ stu_id: text})}
                         />
                         <Button gradient onPress={() => {this.handleSignup()}}>
                             {loading ? 

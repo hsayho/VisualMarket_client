@@ -7,6 +7,8 @@ import axios from 'axios';
 export default class Login extends Component{
     state={
         users: "",
+        id: '',
+        password: '',
         errors: [],
         loading: false,
     }
@@ -25,18 +27,29 @@ export default class Login extends Component{
     }
 
 
-    handleLogin = () => {
+    handleLogin = async () => {
         const {navigation} = this.props;
         const {id, password} = this.state;
         const errors = [];
         this.setState({ loading: true})
+        await axios.post('http://10.0.2.2:5000/api/members',{
+            id: this.state.id,
+            password: this.state.password
+        })
+        .then(function (res) {
+            console.log('데이터 : '+res.data[0].mem_id);
+            
+        })
+        .catch(function (err){
+            console.log(err);
+        });
 
         Keyboard.dismiss(); // 키보드 사라짐
         setTimeout(() => {
-            if(id !==this.state.users[0]['userID']){    // 임의의 아이디 seho100와 비교
+            if(id !=='seho100'){    // 임의의 아이디 seho100와 비교
                 errors.push('id')
             }
-            if(password !== 'sop8377'){ // 임의의 비밀번호 sop8377과 비교
+            if(password !== 'jhkim8461'){ // 임의의 비밀번호 sop8377과 비교
                 errors.push('password') 
             }
     
