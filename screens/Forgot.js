@@ -1,62 +1,82 @@
 import React, { Component } from 'react';
 import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, Alert} from 'react-native';
-
+import axios from 'axios';
 import {Button, Text, Block, Input} from '../components';
 import {theme} from '../constants';
 
 export default class Forgot extends Component{
     state={
+        student_id: '',
         id: '',
-        email: '',
         errors: [],
         loading: false,
     }
 
-    handleFind = () => {
+    handleFind =async () => {
         const {navigation} = this.props;
-        const {id, email} = this.state;
+        const {id, student_id} = this.state;
         const errors = [];
+        var result= '';
+        var result_stu_id = '';
+        var result_id = '';
         this.setState({ loading: true})
 
         Keyboard.dismiss(); // 키보드 사라짐
-        setTimeout(() => {
-            if(id !=='seho100'){    // 임의의 아이디 seho100와 비교
-                errors.push('id')
+        await axios.get('http://10.0.2.2:5000/api/members_password?stu_id='+student_id+'&id='+id)
+        .then(function(res) {
+            if(res.data.length>0){
+                console.log(res.data);
+                console.log(res.data[0].mem_id);
+                result = res.data;
+                result_stu_id = res.data[0].stu_id;
+                result_id = res.data[0].mem_id;
             }
-            if(email !=='seho4815@naver.com'){
-                errors.push('email')
-            }
-    
-            this.setState({ errors, loading: false});
-    
-            if(!errors.length){
-                Alert.alert(
-                    '비밀번호 전송 완료!',
-                    '회원님의 이메일로 비밀번호를 전송하였습니다.',
-                    [
-                        {
-                            text: '확인', onPress:() => {
-                                navigation.navigate('Login')
-                            }
-                        }
-                    ],
-                    {cancelable : false}
-                )
-                navigation.navigate('Browse');
-            } else{
-                Alert.alert(
-                    '정보 불일치',
-                    '일치하는 정보가 없습니다.',
-                    [
-                        {
-                            text: '다시 시도', 
-                        }
-                    ],
-                    {cancelable : false}
-                )
-            }
-        }, 2000);
+            
+        });
         
+    
+        if(id !==result_id){    // 임의의 아이디 seho100와 비교
+            errors.push('id')
+        }
+        if(student_id !==result_stu_id){
+            errors.push('student_id')
+        }
+
+        this.setState({ errors, loading: false});
+
+        if(result.length>0){
+            await axios.put('http://10.0.2.2:5000/api/members/password?stu_id='+student_id)
+            .then(function(res) {
+            if(res.data.length>0){
+                
+            }
+            
+        });
+
+            Alert.alert(
+                '비밀번호 초기화',
+                '회원님의 학번으로 비밀번호가 초기화 되었습니다.',
+                [
+                    {
+                        text: '확인', onPress:() => {
+                            navigation.navigate('Login')
+                        }
+                    }
+                ],
+                {cancelable : false}
+            )
+        } else{
+            Alert.alert(
+                '정보 불일치',
+                '일치하는 정보가 없습니다.',
+                [
+                    {
+                        text: '다시 시도', 
+                    }
+                ],
+                {cancelable : false}
+            )
+        }
         
     }
 
@@ -72,18 +92,18 @@ export default class Forgot extends Component{
                 <Text h1 bold>비밀번호 찾기</Text>
                     <Block middle>
                         <Input
+                            error={hasErrors('student_id')}
+                            label="Student ID"
+                            style={[styles.input, hasErrors('student_id')]}
+                            defaultValue={this.state.student_id}
+                            onChangeText={text => this.setState({student_id: text})}
+                        />
+                        <Input
                             error={hasErrors('id')}
                             label="ID"
                             style={[styles.input, hasErrors('id')]}
                             defaultValue={this.state.id}
                             onChangeText={text => this.setState({ id: text})}
-                        />
-                        <Input
-                            error={hasErrors('email')}
-                            label="email"
-                            style={[styles.input, hasErrors('email')]}
-                            defaultValue={this.state.email}
-                            onChangeText={text => this.setState({ email: text})}
                         />
                         <Button gradient onPress={() => {this.handleFind()}}>
                             {loading ? 

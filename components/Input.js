@@ -19,7 +19,7 @@ export default class Input extends Component {
     return (
       <Block flex={false}>
         {label ? (
-          <Text gray2={!error} accent={error}>
+          <Text gray={!error} accent={error}>
             {label}
           </Text>
         ) : null}
@@ -43,7 +43,7 @@ export default class Input extends Component {
         ) : (
           <Ionicons
             color={theme.colors.gray}
-            size={theme.sizes.font * 3}
+            size={theme.sizes.font * 1.7}
             name={!toggleSecure ? "md-eye" : "md-eye-off"}
           />
         )}

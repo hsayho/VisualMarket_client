@@ -10,6 +10,9 @@ import Explore from '../screens/Explore';
 import Browse from '../screens/Browse';
 import Product from '../screens/Product';
 import Settings from '../screens/Settings';
+import MyProduct from '../screens/MyProduct';
+import AddGoods from '../screens/AddGoods';
+import Home from '../screens/Home';
 
 import {theme} from '../constants';
 
@@ -22,6 +25,10 @@ export default createStackNavigator({
     Settings,
     Explore,
     Product,
+    MyProduct,
+    Home,
+    AddGoods,
+
 }, {
     initialRouteName: 'Welcome',
     defaultNavigationOptions: {

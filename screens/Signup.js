@@ -15,6 +15,27 @@ export default class Signup extends Component{
         errors: [],
         loading: false,
     }
+    handleConfirm = async() => {
+        var confirm_result='';
+        const {id} = this.state;
+        await axios.get('http://10.0.2.2:5000/api/members_id?id='+id)
+        .then(function(res){
+            console.log(res.data);
+            
+            if(res.data.length>0){ 
+                confirm_result = res.data[0].mem_id;
+                console.log(res.data[0].mem_id);
+            }
+        })
+        if(confirm_result == id){ 
+            alert('이미 사용중인 아이디입니다.');
+            this.setState({id:''});
+            console.log('리렌더링이 완료!');
+        }
+        else{
+            alert('사용 가능한 아이디입니다!');
+        }
+    }
 
     handleSignup = async() => {
         const {navigation} = this.props;
@@ -25,7 +46,7 @@ export default class Signup extends Component{
 
         Keyboard.dismiss(); // 키보드 사라짐
 
-        await axios.post('http://10.0.2.2:5000/api/signup', {
+        await axios.post('http://10.0.2.2:5000/api/members', {
             id: this.state.id,
             stu_id: this.state.stu_id,
             username: this.state.username,
@@ -113,13 +134,18 @@ export default class Signup extends Component{
                 <Block style={{backgroundColor:'white'}} padding={[0, theme.sizes.base * 2]}>
                 <Text h1 bold>회원가입</Text>
                     <Block middle>
-                        <Input
-                            error={hasErrors('id')}
-                            label="ID"
-                            style={[styles.input, hasErrors('id')]}
-                            defaultValue={this.state.id}
-                            onChangeText={text => this.setState({ id: text})}
-                        />
+                        <Block margin={[theme.sizes.base, 0]}>
+                            <Input
+                                error={hasErrors('id')}
+                                label="ID"
+                                style={[styles.input, hasErrors('id')]}
+                                defaultValue={this.state.id}
+                                onChangeText={text => this.setState({ id: text})}
+                            />
+                            <Button gradient style={styles.confirmBtn} onPress={() => this.handleConfirm()}>
+                                <Text white center>ID 확인</Text>
+                            </Button>
+                        </Block>
                         <Input
                             secure
                             error={hasErrors('password')}
@@ -138,7 +164,7 @@ export default class Signup extends Component{
                         <Input
                             email
                             error={hasErrors('stu_id')}
-                            label="Student Number"
+                            label="Student ID"
                             style={[styles.input, hasErrors('stu_id')]}
                             defaultValue={this.state.stu_id}
                             onChangeText={text => this.setState({ stu_id: text})}
@@ -174,5 +200,15 @@ const styles = StyleSheet.create({
     hasErrors: {
         borderBottomColor: theme.colors.accent,
         borderBottomWidth: 0.8,
-    }
+    },
+    confirmBtn: {
+        position: "absolute",
+        alignItems: "flex-end",
+        width: theme.sizes.base * 4,
+        height: theme.sizes.base * 2,
+        marginTop: theme.sizes.base*3.1,
+        marginRight:0,
+        paddingRight:10,
+        right: 0
+      }
 })

@@ -11,6 +11,8 @@ export default class Login extends Component{
         password: '',
         errors: [],
         loading: false,
+        confirm_id: '',
+        confirm_password: '',
     }
 
     componentDidMount(){
@@ -28,35 +30,36 @@ export default class Login extends Component{
 
 
     handleLogin = async () => {
+        var result_id='';
+        var result_password='';
         const {navigation} = this.props;
         const {id, password} = this.state;
         const errors = [];
         this.setState({ loading: true})
-        await axios.post('http://10.0.2.2:5000/api/members',{
-            id: this.state.id,
-            password: this.state.password
-        })
+        await axios.get('http://10.0.2.2:5000/api/members?id='+id+'&password='+password)
         .then(function (res) {
-            console.log('데이터 : '+res.data[0].mem_id);
+            result_id = res.data[0].mem_id;
+            result_password = res.data[0].mem_password;
+            console.log('데이터 : '+res.data[0].mem_id+res.data[0].mem_password);
             
         })
         .catch(function (err){
             console.log(err);
         });
-
+        
         Keyboard.dismiss(); // 키보드 사라짐
         setTimeout(() => {
-            if(id !=='seho100'){    // 임의의 아이디 seho100와 비교
+            if(id !==result_id){    // 임의의 아이디 seho100와 비교
                 errors.push('id')
             }
-            if(password !== 'jhkim8461'){ // 임의의 비밀번호 sop8377과 비교
+            if(password !== result_password){ // 임의의 비밀번호 sop8377과 비교
                 errors.push('password') 
             }
     
             this.setState({ errors, loading: false});
     
             if(!errors.length){
-                navigation.navigate('Browse');
+                navigation.navigate('Browse',{current_id: id,});
             }
         }, 2000);
         

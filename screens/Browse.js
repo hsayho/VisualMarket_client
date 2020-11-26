@@ -1,46 +1,101 @@
 import React, { Component } from 'react';
-import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, TouchableOpacity, ScrollView} from 'react-native';
+import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, TouchableOpacity, ScrollView, Dimensions} from 'react-native';
 import {Button, Text, Block,Card ,Badge} from '../components';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {theme, mocks} from '../constants';
+import Product from './Product';
+import axios from 'axios';
+import Board from './Board';
+import MyProduct from './MyProduct';
+import Home from './Home';
 
+const { width, height } = Dimensions.get("window");
+var current_id='';
 export default class Browse extends Component{
     
+    static navigationOptions={
+        headerShown: false,
+    }
+    
     state={
-        active:'Products',
+        active:'Home',
         categories: [],
+        page: '',
     }
 
     componentDidMount = () => {
         
     }
 
+    renderAdd_goods = () => {
+        const {navigation} = this.props;
+        return(
+            <Block style={styles.footer}>
+                <Button
+                    gradient style={{width: 50}}
+                    onPress={() => navigation.navigate('AddGoods', {current_id: current_id})}
+                 >
+                    <Text bold white center>+</Text>
+                </Button>
+            </Block>
+        )
+    }
+
+    renderAdd_Board = () => {
+        return(
+            <Block style={styles.footer}>
+                <Button gradient style={{width: 50}}>
+                    <Text bold white center>+</Text>
+                </Button>
+            </Block>
+        )
+    }
+
     handleTap = (tab) => {
         const { categories } = this.props;
-        const filtered = categories.filter(
-            category => category.tags.includes(tab.toLowerCase())
-        );
-
-        this.setState({ active: tab, categories: filtered });
+        /*const filtered = categories.filter(
+            category => category.tags.includes(tab)
+        );*/
+        
+        this.setState({ active: tab, page: tab});
+        
     }
 
     renderTab(tab){
         const {active} = this.state;
-        const isActive = active === tab;
+        const isActive = active === tab.title;
         return(
             <TouchableOpacity
-                key={`tab-${tab}`}
-                onPress={() => this.handleTap(tab)}
+                key={`tab-${tab.title}`}
+                onPress={() => this.handleTap(tab.title)}
                 style={[styles.tab, isActive ? styles.active : null]}    
             >
-                <Text title medium gray={!isActive} secondary={isActive}>{tab}</Text>
+                <Ionicons color={theme.colors.gray} name={tab.icon} size={20} style={{textAlign: 'center'}}/>
+                <Text title medium gray={!isActive} secondary={isActive} style={{fontSize:14, marginTop: 5}}>{tab.title}</Text>
             </TouchableOpacity>
         )
     }
 
     render(){
-        const {profile, navigation, categories} = this.props;
         
-        const tabs = ['Products', 'Inspirations', 'Shop'];
+        const {profile, navigation, categories} = this.props;
+        const {page} = this.state;
+        current_id = navigation.getParam('current_id');
+        console.log('현재 접속된 아이디 : ' + current_id);
+        const tabs = [
+            {
+                title: 'Home',
+                icon:'home-outline',
+            },
+            {
+                title: 'Board',
+                icon:'document-text-outline',
+            },
+            {
+                title: 'My',
+                icon:'person-outline',
+            }
+        ];
 
         return(
             <Block style={{backgroundColor:'white'}}>
@@ -62,21 +117,17 @@ export default class Browse extends Component{
                     style={{paddingVertical: theme.sizes.base * 2}}
                 >
                     <Block flex={false} row space="between" style={styles.categories}>
-                        {categories.map(category => (
-                            <TouchableOpacity onPress={() => navigation.navigate('Explore', {category})}
-                            key = {category.name}>
-                            <Card center middle shadow style={styles.category}>
-                                <Badge margin={[0, 0, 15]} size={50} color="rgba(117,119,228,0.20)">
-                                    <Image source = {category.image} />
-                                </Badge>
-                                <Text medium>{category.name}</Text>
-                                <Text gray caption>{category.count}</Text>
-                            </Card>
-                        </TouchableOpacity>
-                        ))}
+                        {page==='Home' ? <Home />
+                        : page==='Board' ? <Board />
+                        : page==='My' ? <MyProduct /> : <Home />}
+                        
                     </Block>
                     
                 </ScrollView>
+                {page==='Home' ? this.renderAdd_goods()
+                : page==='Board' ? this.renderAdd_Board()
+                : page=== 'My' ? null
+                : this.renderAdd_goods()}
             </Block>
         )
     }
@@ -90,6 +141,7 @@ Browse.defaultProps={
 const styles = StyleSheet.create({
     header:{
         paddingHorizontal: theme.sizes.base * 2,
+        marginBottom: 10,
     },
     avatar: {
         height: theme.sizes.base * 2 ,
@@ -103,7 +155,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: theme.colors.gray2,
         marginVertical: theme.sizes.base,
-        marginHorizontal: theme.sizes.base * 2,
+        marginHorizontal: theme.sizes.base * 6,
     },
     active: {
         borderBottomColor: '#7577e4',
@@ -117,5 +169,17 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         paddingHorizontal: theme.sizes.base * 2,
         marginBottom : theme.sizes.base * 3.5,
-    }
+    },
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0,
+        overflow: 'visible',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: height * 0.1,
+        width,
+        paddingBottom: theme.sizes.base * 3,
+    },
 })
