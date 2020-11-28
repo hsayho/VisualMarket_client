@@ -10,6 +10,7 @@ const { width, height} = Dimensions.get('window')
 var goods ='';
 var goods_num='';
 var current_id='';
+var current_stu_id='';
 
 export default class Product extends Component{
 static navigationOptions = ({}) => {
@@ -17,23 +18,63 @@ static navigationOptions = ({}) => {
 }
     state={
         goods_detail: '',
+        jjim: false,
+        stu_id: '',
     }
     componentDidMount(){
         this.loadGoodsDetail();
+        //this.loadStuID();
     }
 
+    /*loadStuID = async() => {
+        console.log('현재 접속 아이디는 :' +current_id);
+        await axios.get('http://10.0.2.2:5000/api/StuID/?current_id='+current_id)
+        .then(res => {
+            const detail = res.data;
+            this.setState({ stu_id: detail.stu_id});
+            console.log(this.state.stu_id);
+            console.log('타이틀 : ' + detail);
+        })
+    }*/
+
     loadGoodsDetail = async() => {
+        const { stu_id } = current_stu_id;
         await axios.get('http://10.0.2.2:5000/api/goods/detail?gno='+goods_num)
         .then(res => {
             const detail = res.data;
             this.setState({ goods_detail: detail});
             console.log(this.state.goods_detail);
-            title=detail.title;
+            title=detail[0].title;
             console.log('타이틀 : ' + title);
         })
         .finally(() => {
             this.setState({goods: true})
         })
+    }
+
+    setJjim = async() => {
+        var getResult = '';
+        this.setState({jjim: !this.state.jjim});
+        const {navigation} = this.props;
+        console.log('찜 학번 : '+current_stu_id + '찜 상품 번호 : ' + goods_num);
+        if(this.state.jjim === true){
+            await axios.delete('http://10.0.2.2:5000/api/jjim?stuid='+current_stu_id+'gno='+goods_num,{
+                stu_id: current_stu_id,
+                gno: goods_num,
+            })
+            .then(res => {
+                
+            })
+        }
+        else{
+            await axios.post('http://10.0.2.2:5000/api/jjim',{
+                stu_id: current_stu_id,
+                gno: goods_num,
+            })
+            .then(res => {
+            getResult = res.data;
+            })
+        }
     }
 
     completePurchase = async() => {
@@ -63,26 +104,40 @@ static navigationOptions = ({}) => {
     renderPurchase = () => {
         const {navigation} = this.props;
         return(
-            <Block style={styles.footer}>
+            <Block style={styles.footer} row>
                 <Button
-                    gradient style={{width: 200}}
+                    gradient style={{width: 200, marginLeft:35}}
                     onPress={() => this.completePurchase()}
                  >
                     <Text bold white center>{goods.price}원 구매하기</Text>
                 </Button>
+                <Block flex={false} style={{marginLeft:20}}>
+                    <TouchableOpacity onPress={() => this.setJjim()}>
+                        {this.state.jjim === true ? <FontAwesome name="heart" size={30} color='red'/> 
+                        : <FontAwesome name="heart-o" size={30} color='black'/>}
+                        
+                    </TouchableOpacity>
+                </Block>
             </Block>
         )
     }
 
     renderSoldout = () => {
         return(
-            <Block style={styles.footer}>
+            <Block style={styles.footer} row>
                 <Button
-                    style={{width: 200}}
+                    style={{width: 200, marginLeft:35}}
                     color="gray"
                  >
                     <Text bold white center>SOLD OUT</Text>
                 </Button>
+                <Block flex={false} style={{marginLeft:20}}>
+                    <TouchableOpacity onPress={() => this.setJjim()}>
+                        {this.state.jjim === true ? <FontAwesome name="heart" size={30} color='red'/> 
+                        : <FontAwesome name="heart-o" size={30} color='black'/>}
+                        
+                    </TouchableOpacity>
+                </Block>
             </Block>
         )
     }
@@ -91,8 +146,8 @@ static navigationOptions = ({}) => {
         const { product, navigation } = this.props;
         goods = navigation.getParam('number');
         current_id = navigation.getParam('current_id');
+        current_stu_id = current_id[0].stu_id;
         goods_num = goods.Gno; 
-        console.log(goods_num);
         return(
             <Block style={{backgroundColor:'white'}}>
                 <ScrollView showsVerticalScrollIndicator = {false}>
@@ -107,8 +162,10 @@ static navigationOptions = ({}) => {
                         <Divider margin={[theme.sizes.padding * 0.9, 0]} />
                     </Block>
                 </ScrollView>
-                {goods.state === 1 ? this.renderPurchase() : this.renderSoldout()}
-                
+                <Block row>
+                    {goods.state === 1 ? this.renderPurchase() : this.renderSoldout()}
+                    
+                </Block>
             </Block>
         )
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Dimensions, StyleSheet, Image, KeyboardAvoidingView, Animated, Keyboard, TouchableOpacity, ScrollView} from 'react-native';
+import {Dimensions, StyleSheet, Image, KeyboardAvoidingView, Animated, Keyboard, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {Button, Text, Block,Card ,Badge, Input, Divider} from '../components';
 import {theme, mocks} from '../constants';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -18,11 +18,21 @@ export default class Home extends Component{
         goods: false,
         goods_info: '',
         gno: '',
+        members: '',
     }
 
     componentDidMount(){
         this.loadGoodsInfo();
+        this.loadMemberInfo();
         //console.log('받아온 상품 데이터 : ' + this.state.goods_info);
+    }
+
+    loadMemberInfo = async() => {
+        await axios.get('http://10.0.2.2:5000/api/members-studentID?id='+current_id)
+        .then(res => {
+            const members = res.data;
+            this.setState({ members: members});
+        })
     }
 
     loadGoodsInfo = async() => {
@@ -45,8 +55,9 @@ export default class Home extends Component{
                 <Block>
                     <TouchableOpacity
                         onPress= {() => {
-                            this.props.navigation.navigate('Product', {number: goods, current_id:current_id})
-                            console.log(goods.Gno);
+                            this.props.navigation.navigate('Product', {number: goods, current_id: this.state.members})
+                            console.log('보내기 전 상품 번호 : '+goods.Gno);
+                            console.log('보내기 전 멤버 데이터 : '+this.state.members);
                         }
                     }
                     >
@@ -70,11 +81,12 @@ export default class Home extends Component{
 
     render(){
         //const {navigation, Gno} = super.props;
-        current_id = this.props;
+        current_id = this.props.current_id;
+        console.log('current_id 는 지금 : '+current_id);
         if(!this.state.goods){
             return(
                 <Block center middle style={{marginTop: height/5}}>
-                    <Text bold gray style={{fontSize:50, justifyContent:'center'}}>Loading...</Text>
+                    <ActivityIndicator size="large" color="#7577E4" />
                 </Block>
             )
         }

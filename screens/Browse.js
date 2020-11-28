@@ -3,6 +3,7 @@ import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, To
 import { NavigationContainer } from '@react-navigation/native';
 import {Button, Text, Block,Card ,Badge} from '../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {withNavigation} from 'react-navigation';
 import {theme, mocks} from '../constants';
 import Product from './Product';
@@ -57,10 +58,14 @@ export default class Browse extends Component{
     }
 
     renderAdd_Board = () => {
+        const {navigation} = this.props;
         return(
-            <Block style={styles.footer}>
-                <Button gradient style={{width: 50}}>
-                    <Text bold white center>+</Text>
+            <Block style={[styles.footer,{ justifyContent:'center'}]}>
+                <Button
+                    gradient style={{width: 70,}}
+                    onPress={() => navigation.navigate('AddBoard', {current_id: current_id})}
+                 >
+                    <FontAwesome name="pencil" color='white' style={{marginLeft:23}} size={30}/>
                 </Button>
             </Block>
         )
