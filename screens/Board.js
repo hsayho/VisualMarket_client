@@ -12,32 +12,21 @@ static navigationOptions = ({}) => {
     
 }
 
-    renderItem = () => {
-        const { product } = this.props;
-        return(
-            <Block>
-                <Image 
-                    source={product.images[0]}
-                    style={{width, height : height / 2}}
-                    resizeMode= 'contain'
-                    
-                />
-            </Block>
-        )
-    }
 
     render(){
         const { product } = this.props;
         return(
             <Block style={{backgroundColor:'white'}}>
+                
                 <ScrollView showsVerticalScrollIndicator = {false}>
-                    <Text>게시판</Text>
+                    <Card shadow style={{width: width}}>
+                        <Text>게시판</Text>
+                    </Card>
                 </ScrollView>
             </Block>
         )
     }
 }
-
 
 
 const styles = StyleSheet.create({

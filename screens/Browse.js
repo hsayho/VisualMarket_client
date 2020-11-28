@@ -3,6 +3,7 @@ import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, To
 import { NavigationContainer } from '@react-navigation/native';
 import {Button, Text, Block,Card ,Badge} from '../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {withNavigation} from 'react-navigation';
 import {theme, mocks} from '../constants';
 import Product from './Product';
 import axios from 'axios';
@@ -66,7 +67,7 @@ export default class Browse extends Component{
     }
 
     handleTap = (tab) => {
-        const { categories } = this.props;
+        const { categories, navigation } = this.props;
         /*const filtered = categories.filter(
             category => category.tags.includes(tab)
         );*/
@@ -131,9 +132,9 @@ export default class Browse extends Component{
                     style={{paddingVertical: theme.sizes.base * 2}}
                 >
                     <Block flex={false} row space="between" style={styles.categories}>
-                        {page==='Home' ? <Home navigation={navigation}/>
-                        : page==='Board' ? <Board />
-                        : page==='My' ? <MyProduct /> : <Home navigation={navigation}/>}
+                        {page==='Home' ? <Home navigation={navigation} current_id={current_id}/>
+                        : page==='Board' ? <Board navigation={navigation} current_id={current_id}/>
+                        : page==='My' ? <MyProduct /> : <Home navigation={navigation} current_id={current_id}/>}
                         
                     </Block>
                     

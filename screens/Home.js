@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 
 const { width, height} = Dimensions.get('window')
+var current_id='';
 
 export default class Home extends Component{
 
@@ -21,7 +22,7 @@ export default class Home extends Component{
 
     componentDidMount(){
         this.loadGoodsInfo();
-        console.log('받아온 상품 데이터 : ' + this.goods_info);
+        //console.log('받아온 상품 데이터 : ' + this.state.goods_info);
     }
 
     loadGoodsInfo = async() => {
@@ -38,12 +39,18 @@ export default class Home extends Component{
 
     renderGoods = (goods) => {
         
+        
+        console.log(goods.Gno);
         return(
                 <Block>
                     <TouchableOpacity
-                        onPress= {() => this.props.navigation.navigate('Product', {gno: goods.Gno})}
+                        onPress= {() => {
+                            this.props.navigation.navigate('Product', {number: goods, current_id:current_id})
+                            console.log(goods.Gno);
+                        }
+                    }
                     >
-                    <Card shadow middle style={{height:120, width:width}}>
+                    <Card shadow middle style={{height:120, width:width,}}>
                         <Badge color="rgba(117,119,228,0.20" size={120} style={{}}>
                             <Block row center>
                                 <Image style={{width:100, height:100,borderRadius: 10, marginLeft:50, marginRight:30}} source={{uri:'http://10.0.2.2:5000'+goods.image}}/>
@@ -63,7 +70,7 @@ export default class Home extends Component{
 
     render(){
         //const {navigation, Gno} = super.props;
-        
+        current_id = this.props;
         if(!this.state.goods){
             return(
                 <Block center middle style={{marginTop: height/5}}>
