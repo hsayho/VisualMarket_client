@@ -6,17 +6,11 @@ import {Button, Text, Block, Input} from '../components';
 import {theme} from '../constants';
 import ImagePicker from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import imageCompression from 'browser-image-compression';
 
 const {width, height} = Dimensions.get('window');
 const options = {
-    title: '사진 업로드',
-    customButtons: [
-        
-    ],
-    storageOptions: {
-        skipBackup: true,
-        path: 'images',
-    }
+    includeBase64: true,
 }
 var current_id = '';
 
@@ -42,29 +36,44 @@ export default class AddGoods extends Component{
         
     }
 
-    
+    ImgCompress = async() => {
 
-    showImagePicker = () => {
+    }
+
+    /*showImagePicker = () => {
         ImagePicker.showImagePicker(options, (response) => {
-            console.log('showImagePicker Response = ' + JSON.stringify(response.uri));
-
+            console.log('showImagePicker Response = ' + JSON.stringify(response.data));
+            console.log('용량 : '+ JSON.stringify(response))
             if(response.customButton){
                 alert(response.customButton);
             }
             else this.setState({photo: response, imageSource: response.uri});
         })
-    }
+    }*/
 
     showCameraRoll = () => {
-        ImagePicker.launchImageLibrary(options, (response) => {
+        /*ImagePicker.launchImageLibrary(options, (response) => {
             if(response.error){
                 console.timeLog('이미지 런치 에러: ' + response.error);
             }
             else{
-                console.log('showCameraRoll response : '+ response.uri)
-                this.setState({imageSource: response.uri});
+                console.log('showCameraRoll response : '+ JSON.stringify(response.uri))
+                this.setState({photo: response, imageSource: response.uri});
             }
-        })
+        })*/
+        ImagePicker.launchImageLibrary(
+            {
+                noData: true,
+                includeBase64: true,
+                maxHeight:200,
+                maxWidth:200,
+            },
+            (response) => {
+                this.setState({ photo: response, imageSource: response.uri});
+                console.log('이미지 결과 : '+ JSON.stringify(response));
+                console.log('바이너리 데이터 : ' + (response.base64));
+            }
+        )
     }
 
     handleConfirm = async() => {
@@ -102,9 +111,9 @@ export default class AddGoods extends Component{
         Keyboard.dismiss(); // 키보드 사라짐
         const formData = new FormData();
         formData.append('img', {
-            uri: Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", ""),
             name: photo.fileName,
             type: photo.type,
+            uri: photo.uri,
         });
         formData.append('title', this.state.title);
         formData.append('stu_id', this.state.stu_id);
@@ -208,11 +217,11 @@ export default class AddGoods extends Component{
                     <ScrollView>
                         <Block middle style={{marginTop: 15}}>
                             <Block row>
-                                <Button style={[styles.ImageButton, {borderWidth:0.5, width:60, height:60, alignItems:'center', marginRight:20}]} onPress={() => this.showImagePicker()}>
+                                <Button style={[styles.ImageButton, {borderWidth:0.5, width:60, height:60, alignItems:'center', marginRight:20}]} onPress={() => this.showCameraRoll()}>
                                     <Ionicons name="camera-outline" size={50} color={'#7577E4'}/>
                                     
                                 </Button>
-                                {imageSource ? <Image style={{width: 60, height: 60, marginTop:8, borderRadius:10}} source={{uri: imageSource}}/> : null}
+                                {imageSource ? <Image style={{width: 60, height: 60, marginTop:8, borderRadius:10}} source={{uri: photo.uri}}/> : null}
                             </Block>
                             <Input
                                 error={hasErrors('title')}

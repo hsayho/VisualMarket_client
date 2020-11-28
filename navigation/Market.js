@@ -13,6 +13,7 @@ import Settings from '../screens/Settings';
 import MyProduct from '../screens/MyProduct';
 import AddGoods from '../screens/AddGoods';
 import Home from '../screens/Home';
+import Board from '../screens/Board';
 
 import {theme} from '../constants';
 
@@ -28,6 +29,7 @@ export default createStackNavigator({
     MyProduct,
     Home,
     AddGoods,
+    Board,
 
 }, {
     initialRouteName: 'Welcome',

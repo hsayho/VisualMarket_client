@@ -11,7 +11,16 @@ export default class Product extends Component{
 static navigationOptions = ({}) => {
     
 }
+    constructor(props){
+        super(props);
+        this.state={
+            
+        }
 
+    }
+    componentDidMount(){
+        
+    }
     renderItem = () => {
         const { product } = this.props;
         return(
@@ -27,7 +36,10 @@ static navigationOptions = ({}) => {
     }
 
     render(){
-        const { product } = this.props;
+        const { product, navigation } = this.props;
+        const { gno } = navigation.getParam('gno');
+        
+        console.log('parameter : '+gno);
         return(
             <Block style={{backgroundColor:'white'}}>
                 <ScrollView showsVerticalScrollIndicator = {false}>
@@ -53,6 +65,7 @@ static navigationOptions = ({}) => {
 
 Product.defaultProps = {
     product: mocks.products[0],
+
 }
 
 const styles = StyleSheet.create({

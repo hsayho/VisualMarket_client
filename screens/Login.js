@@ -4,6 +4,7 @@ import {Button, Text, Block, Input} from '../components';
 import {theme} from '../constants';
 import axios from 'axios';
 
+
 export default class Login extends Component{
     state={
         users: "",
@@ -16,17 +17,18 @@ export default class Login extends Component{
     }
 
     componentDidMount(){
-        this.loadUserInfo();
+        
     }
 
-    loadUserInfo = async () => {
-        await axios.get('http://10.0.2.2:5000/api/users')
+    /*loadGoodsInfo = async() => {
+        await axios.get('http://10.0.2.2:5000/api/goods')
         .then(res => {
-            const users = res.data;
-            this.setState({ users });
-            console.log(users);
+            const goods = res.data;
+            goods_info = goods;
+            
         })
-    }
+        console.log('로드 : '+goods_info);
+    }*/
 
 
     handleLogin = async () => {
@@ -59,7 +61,7 @@ export default class Login extends Component{
             this.setState({ errors, loading: false});
     
             if(!errors.length){
-                navigation.navigate('Browse',{current_id: id,});
+                navigation.navigate('Browse',{current_id: id});
             }
         }, 2000);
         

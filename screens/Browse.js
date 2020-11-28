@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator, Keyboard, TouchableOpacity, ScrollView, Dimensions} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import {Button, Text, Block,Card ,Badge} from '../components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {theme, mocks} from '../constants';
@@ -11,6 +12,8 @@ import Home from './Home';
 
 const { width, height } = Dimensions.get("window");
 var current_id='';
+
+
 export default class Browse extends Component{
     
     static navigationOptions={
@@ -26,6 +29,17 @@ export default class Browse extends Component{
     componentDidMount = () => {
         
     }
+
+    
+
+    /*renderGoods = async() => {
+        await axios.get('http://10.0.2.2:5000/api/goods')
+        .then(res => {
+            const goods = res.data;
+            this.setState({ goods_info: goods});
+            console.log(this.state.goods_info);
+        })
+    }*/
 
     renderAdd_goods = () => {
         const {navigation} = this.props;
@@ -117,9 +131,9 @@ export default class Browse extends Component{
                     style={{paddingVertical: theme.sizes.base * 2}}
                 >
                     <Block flex={false} row space="between" style={styles.categories}>
-                        {page==='Home' ? <Home />
+                        {page==='Home' ? <Home navigation={navigation}/>
                         : page==='Board' ? <Board />
-                        : page==='My' ? <MyProduct /> : <Home />}
+                        : page==='My' ? <MyProduct /> : <Home navigation={navigation}/>}
                         
                     </Block>
                     
