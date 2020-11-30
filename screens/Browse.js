@@ -121,7 +121,7 @@ export default class Browse extends Component{
             <Block style={{backgroundColor:'white'}}>
                 <Block flex={false} row center space="between" style={styles.header}>
                     <Text h1 bold>Visual Market</Text>
-                    <Button onPress={() => navigation.navigate('Settings')}>
+                    <Button onPress={() => navigation.navigate('Settings', {current_id: current_id})}>
                         <Image 
                             source={profile.avatar}
                             style={styles.avatar}

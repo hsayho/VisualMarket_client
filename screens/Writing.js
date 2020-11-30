@@ -32,7 +32,7 @@ static navigationOptions = ({}) => {
     }
 
     loadComment = async() => {
-        await axios.get('http://10.0.2.2:5000/api/comments')
+        await axios.get('http://10.0.2.2:5000/api/comments?bno='+current_bno)
         .then(res => {
             const comments = res.data;
             this.setState({ comments_info: comments});
@@ -103,8 +103,6 @@ static navigationOptions = ({}) => {
         current_bno = board.bno;
         current_id = navigation.getParam('current_id');
         current_stu_id = current_id[0].stu_id;
-        console.log(current_id);
-        console.log(current_stu_id);
         console.log(current_bno);
 
         if(!this.state.loading){
@@ -133,13 +131,16 @@ static navigationOptions = ({}) => {
                             </Block>
                             
                             <Divider margin={[theme.sizes.padding * 0.9, 0]} />
-
-                            {this.state.comments_info.map(cinfo =>(
-                                <Block style={{marginBottom:40}}>
+                            
+                            {this.state.comments_info ? this.state.comments_info.map(cinfo =>(
+                                <Block>
                                     {this.renderComment(cinfo)}
                                 </Block>
 
-                            ))}
+                            )) : null}
+                            <Block style={{marginBottom:40}}>
+
+                            </Block>
                         </Block>
                     </ScrollView>
                     {this.renderWriteComment()}

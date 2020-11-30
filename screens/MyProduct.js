@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Dimensions, StyleSheet, Image, KeyboardAvoidingView, Animated, Keyboard, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {Button, Text, Block,Card ,Badge, Input, Divider} from '../components';
 import {theme, mocks} from '../constants';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 
@@ -23,7 +23,7 @@ export default class MyProduct extends Component{
 
     componentDidMount(){
         this.loadMemberInfo();
-        this.loadGoodsInfo();
+        //this.loadGoodsInfo();
         this.loadJjimList();
         //console.log('받아온 상품 데이터 : ' + this.state.goods_info);
     }
@@ -35,11 +35,12 @@ export default class MyProduct extends Component{
             const members = res.data;
             this.setState({ members: members});
             stu_id = members[0].stu_id;
+            console.log(stu_id);
             console.log('회원 정보 불러오기 완료');
         })
     }
 
-    loadGoodsInfo = async() => {
+    /*loadGoodsInfo = async() => {
         await axios.get('http://10.0.2.2:5000/api/goods')
         .then(res => {
             const goods = res.data;
@@ -48,18 +49,22 @@ export default class MyProduct extends Component{
             console.log(this.state.goods_info);
             //console.log(this.state.goods_info[0].Gno);
         })
-    }
+    }*/
 
     loadJjimList = async() => {
-        var isJjims = '';
+        var isJjims='';
+        var len='';
         await axios.get('http://10.0.2.2:5000/api/JjimList?id='+stu_id)
         .then(res => {
             isJjims = res.data;
             console.log('찜 목록 불러오기 완료');
+            console.log(isJjims);
+            console.log(len);
+            len = isJjims.length;
         })
 
-        if(isJjims.length>0){
-            await axios.get('http://10.0.2.2:5000/api/goods?id='+current_id)
+        if(len>0){
+            await axios.get('http://10.0.2.2:5000/api/Jjimgoods?gno='+isJjims[0].Gno)
             .then(res => {
                 const jjims = res.data;
                 this.setState({ jjims: jjims});
@@ -68,6 +73,9 @@ export default class MyProduct extends Component{
                 this.setState({ loading:true });
             })
             
+        }
+        else{
+            this.setState({ loading:true});
         }
     }
 
@@ -127,12 +135,15 @@ export default class MyProduct extends Component{
             return(
                 <Block style={{backgroundColor:'white'}}>
                     <ScrollView showsVerticalScrollIndicator = {false}>
-                        {this.state.jjims.map(jjims => (    
+                        {this.state.jjims ? this.state.jjims.map(jjims => (    
                                 <Block>
                                     {this.renderJjims(jjims)}
                                 </Block>
                             
-                        ))}
+                        )) : <Block center>
+                                <Text gray h3 style={{marginBottom:60}}>찜목록이 비어있습니다</Text>
+                                <MaterialCommunityIcons name="emoticon-cry-outline" size={200} color='#c8c7c9'/>
+                            </Block>}
                         <Block style={{marginBottom:50}}></Block>
 
                     </ScrollView>

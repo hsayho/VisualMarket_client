@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Dimensions, StyleSheet, Image, KeyboardAvoidingView, Animated, Keyboard, TouchableOpacity, ScrollView} from 'react-native';
+import {Dimensions, StyleSheet, Image, KeyboardAvoidingView, Animated, Keyboard, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {Button, Text, Block,Card ,Badge, Input, Divider} from '../components';
 import {theme, mocks} from '../constants';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -20,9 +20,12 @@ static navigationOptions = ({}) => {
         goods_detail: '',
         jjim: false,
         stu_id: '',
+        loading: false,
+        like: false,
     }
     componentDidMount(){
         this.loadGoodsDetail();
+        this.renderLike();
         //this.loadStuID();
     }
 
@@ -57,13 +60,21 @@ static navigationOptions = ({}) => {
         this.setState({jjim: !this.state.jjim});
         const {navigation} = this.props;
         console.log('찜 학번 : '+current_stu_id + '찜 상품 번호 : ' + goods_num);
-        if(this.state.jjim === true){
-            await axios.delete('http://10.0.2.2:5000/api/jjim?stuid='+current_stu_id+'gno='+goods_num,{
-                stu_id: current_stu_id,
-                gno: goods_num,
+        if(this.state.jjim){
+            await axios.delete('http://10.0.2.2:5000/api/jjim',{
+                data: {
+                    stu_id: current_stu_id,
+                    gno: goods_num
+                }
             })
             .then(res => {
                 
+            })
+            .finally(()=>{
+                this.setState({ 
+                    loading: true,
+                    jjim: false,
+                })
             })
         }
         else{
@@ -74,7 +85,28 @@ static navigationOptions = ({}) => {
             .then(res => {
             getResult = res.data;
             })
+            .finally(()=>{
+                this.setState({
+                    loading: true,
+                    jjim: true,
+                })
+            })
         }
+    }
+
+    renderLike = async() => {
+        
+        await axios.get('http://10.0.2.2:5000/api/goods/like?stuid='+current_stu_id+'&gno='+goods_num)
+        .then(res => {
+            const len = res.data;
+            if(len.length>0){
+                this.setState({ jjim:true });
+            }
+        })
+        .finally(() => {
+            this.setState({ loading: true});
+        })
+        
     }
 
     completePurchase = async() => {
@@ -147,27 +179,39 @@ static navigationOptions = ({}) => {
         goods = navigation.getParam('number');
         current_id = navigation.getParam('current_id');
         current_stu_id = current_id[0].stu_id;
-        goods_num = goods.Gno; 
-        return(
-            <Block style={{backgroundColor:'white'}}>
-                <ScrollView showsVerticalScrollIndicator = {false}>
-                    {this.renderItem()}
+        goods_num = goods.Gno;
+        console.log(goods_num);
+        console.log(current_stu_id);
 
-                    <Block style={styles.product}>
-                        <Text h2 bold>{goods.title}</Text>
-                        <Block flex={false} row margin={[theme.sizes.base, 0]}>
-                        <Text>판매자 {goods.seller_id}</Text>
-                        </Block>
-                        <Text light height={22} align="justify" gray>{goods.content}</Text>
-                        <Divider margin={[theme.sizes.padding * 0.9, 0]} />
-                    </Block>
-                </ScrollView>
-                <Block row>
-                    {goods.state === 1 ? this.renderPurchase() : this.renderSoldout()}
-                    
+        if(!this.state.loading){
+            return(
+                <Block center middle style={{marginTop: height/5}}>
+                    <ActivityIndicator size="large" color="#7577E4" />
                 </Block>
-            </Block>
-        )
+            )
+        }
+        else{
+            return(
+                <Block style={{backgroundColor:'white'}}>
+                    <ScrollView showsVerticalScrollIndicator = {false}>
+                        {this.renderItem()}
+
+                        <Block style={styles.product}>
+                            <Text h2 bold>{goods.title}</Text>
+                            <Block flex={false} row margin={[theme.sizes.base, 0]}>
+                            <Text>판매자 {goods.seller_id}</Text>
+                            </Block>
+                            <Text light height={22} align="justify" gray>{goods.content}</Text>
+                            <Divider margin={[theme.sizes.padding * 0.9, 0]} />
+                        </Block>
+                    </ScrollView>
+                    <Block row>
+                        {goods.state === 1 ? this.renderPurchase() : this.renderSoldout()}
+                        
+                    </Block>
+                </Block>
+            )
+        }
     }
 }
 
