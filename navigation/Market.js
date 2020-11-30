@@ -15,6 +15,7 @@ import AddGoods from '../screens/AddGoods';
 import Home from '../screens/Home';
 import Board from '../screens/Board';
 import AddBoard from '../screens/AddBoard';
+import Writing from '../screens/Writing';
 
 import {theme} from '../constants';
 
@@ -32,6 +33,7 @@ export default createStackNavigator({
     AddGoods,
     Board,
     AddBoard,
+    Writing,
 
 }, {
     initialRouteName: 'Welcome',

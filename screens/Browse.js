@@ -139,7 +139,7 @@ export default class Browse extends Component{
                     <Block flex={false} row space="between" style={styles.categories}>
                         {page==='Home' ? <Home navigation={navigation} current_id={current_id}/>
                         : page==='Board' ? <Board navigation={navigation} current_id={current_id}/>
-                        : page==='My' ? <MyProduct /> : <Home navigation={navigation} current_id={current_id}/>}
+                        : page==='My' ? <MyProduct navigation={navigation} current_id={current_id}/> : <Home navigation={navigation} current_id={current_id}/>}
                         
                     </Block>
                     

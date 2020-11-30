@@ -40,7 +40,7 @@ export default class Home extends Component{
         .then(res => {
             const goods = res.data;
             this.setState({ goods_info: goods});
-            console.log(this.state.goods_info);
+            console.log('홈 상품 정보 : '+this.state.goods_info);
         })
         .finally(() => {
             this.setState({goods: true})
@@ -56,8 +56,8 @@ export default class Home extends Component{
                     <TouchableOpacity
                         onPress= {() => {
                             this.props.navigation.navigate('Product', {number: goods, current_id: this.state.members})
-                            console.log('보내기 전 상품 번호 : '+goods.Gno);
-                            console.log('보내기 전 멤버 데이터 : '+this.state.members);
+                            console.log('보내기 전 goods 정보 : '+goods);
+                            console.log(this.state.members);
                         }
                     }
                     >

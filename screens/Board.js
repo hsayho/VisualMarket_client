@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 
 const { width, height} = Dimensions.get('window')
-
+var current_id='';
 export default class Board extends Component{
 static navigationOptions = ({}) => {
     
@@ -15,10 +15,20 @@ static navigationOptions = ({}) => {
     state={
         loading: false,
         board: '',
+        members: '',
     }
 
     componentDidMount(){
         this.loadBoard();
+        this.loadMemberInfo();
+    }
+
+    loadMemberInfo = async() => {
+        await axios.get('http://10.0.2.2:5000/api/members-studentID?id='+current_id)
+        .then(res => {
+            const members = res.data;
+            this.setState({ members: members});
+        })
     }
 
     loadBoard = async() => {
@@ -35,8 +45,7 @@ static navigationOptions = ({}) => {
 
 
     render(){
-        const { product } = this.props;
-        console.log(this.state.board);
+        current_id = this.props.current_id;
         if(!this.state.loading){
             return(
                 <Block middle center style={{marginTop: height/5}}>
@@ -50,7 +59,13 @@ static navigationOptions = ({}) => {
                     
                     <ScrollView showsVerticalScrollIndicator = {false}>
                         {this.state.board.map(board => (
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress= {() => {
+                                        this.props.navigation.navigate('Writing', {board: board, current_id: this.state.members});
+                                        
+                                    }
+                                }
+                            >
                                 <Card shadow style={{width: width}}>
                                 <Text h3 style={{marginBottom:3}}>{board.btitle}</Text>
                                 <Text numberOfLines={1} style={{marginBottom:3}}>{board.bcontent}</Text>
