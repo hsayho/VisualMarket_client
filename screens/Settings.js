@@ -28,7 +28,7 @@ export default class Settings extends Component{
     }
 
     loadmemberInfo = async() => {
-        await axios.get('http://10.0.2.2:5000/api/members_id?id='+current_id)
+        await axios.get('http://192.168.35.141:5000/api/members_id?id='+current_id)
         .then(res => {
             const members = res.data;
             this.setState({ members: members});
@@ -52,7 +52,7 @@ export default class Settings extends Component{
         if(editing === name){
             return(
                 <TextInput 
-                    placeholder='새 비밀번호를 입력하세요.'
+                    placeholder='Input you New Password.'
                     secureTextEntry={true}
                     onChangeText={text => this.setState({new_Password: text})}
                 />
@@ -68,12 +68,12 @@ export default class Settings extends Component{
     }
 
     changePassword = async() => {
-        await axios.put('http://10.0.2.2:5000/api/newPassword?id='+current_id+'&password='+this.state.new_Password)
+        await axios.put('http://192.168.35.141:5000/api/newPassword?id='+current_id+'&password='+this.state.new_Password)
         .then(res => {
             
         })
         .finally(()=>{
-            alert('비밀번호 변경이 완료되었습니다.');
+            alert('Password change is complete!');
         })
     }
 
@@ -94,16 +94,16 @@ export default class Settings extends Component{
             return(
                 <Block style={{backgroundColor:'white'}}>
                     <Block flex={false} row center space="between" style={styles.header}>
-                        <Text h1 bold>설정</Text>
+                        <Text h1 bold>SETTING</Text>
                         <Button style={{}}>
-                            <Text bold secondary onPress={() => this.changePassword()}>변경사항 저장</Text>
+                            <Text bold secondary onPress={() => this.changePassword()}>SAVE</Text>
                         </Button>
                     </Block>
                     <ScrollView showsVerticalScrollIndicator = {false}>
                         <Block style={styles.inputs}>
                             <Block row space="between" margin={[10, 0]} style={styles.inputRow}>
                                 <Block>
-                                    <Text gray style={{marginBottom: 10}}>사용자 이름</Text>
+                                    <Text gray style={{marginBottom: 10}}>User name</Text>
                                     <Text>{this.state.members[0].mem_name}</Text>
                                     
                                 </Block>
@@ -111,14 +111,14 @@ export default class Settings extends Component{
                             </Block>
                             <Block row space="between" margin={[10, 0]} style={styles.inputRow}>
                                 <Block>
-                                    <Text gray style={{marginBottom: 10}}>비밀번호</Text>
+                                    <Text gray style={{marginBottom: 10}}>Password</Text>
                                     {this.renderEdit('password')}
                                 </Block>
-                                <Text medium secondary onPress={() => this.toggleEdit('password')}>{editing === 'password' ? '저장' : '수정'}</Text>
+                                <Text medium secondary onPress={() => this.toggleEdit('password')}>{editing === 'password' ? 'save' : 'edit'}</Text>
                             </Block>
                             <Block row space="between" margin={[10, 0]} style={styles.inputRow}>
                                 <Block>
-                                    <Text gray style={{marginBottom: 10}}>학번</Text>
+                                    <Text gray style={{marginBottom: 10}}>Student Number</Text>
                                     <Text>{this.state.members[0].stu_id}</Text>
                                 </Block>
                                 
@@ -141,7 +141,7 @@ export default class Settings extends Component{
                                     value={this.state.budget}
                                     onValueChange={value => this.setState({ budget: value})}
                                 />
-                                <Text caption gray right>{this.state.budget.toFixed(0)}원</Text>
+                                <Text caption gray right>{this.state.budget.toFixed(0)}₩</Text>
                             </Block>
                             <Block margin={[10, 0]}>
                                 <Text gray>Monthly Use</Text>
@@ -156,7 +156,7 @@ export default class Settings extends Component{
                                     value={this.state.Cap}
                                     onValueChange={value => this.setState({ Cap: value})}
                                 />
-                                <Text caption gray right>{this.state.Cap.toFixed(0)}원</Text>
+                                <Text caption gray right>{this.state.Cap.toFixed(0)}₩</Text>
                             </Block>
                         </Block>
 
@@ -164,7 +164,7 @@ export default class Settings extends Component{
 
                         <Block style={styles.toggles}>
                             <Block row center space="between" style={{marginBottom: 16}}>
-                                <Text gray2>알림 설정</Text>
+                                <Text gray2>Notifications</Text>
                                 <Switch 
                                     value={this.state.notifications}
                                     onValueChange={value => this.setState({ notifications: value})}
@@ -172,7 +172,7 @@ export default class Settings extends Component{
                             </Block>
 
                             <Block row center space="between"  style={{marginBottom: 16}}>
-                                <Text gray2>광고 수신</Text>
+                                <Text gray2>Advertisement</Text>
                                 <Switch 
                                     value={this.state.advs}
                                     onValueChange={value => this.setState({ advs: value})}

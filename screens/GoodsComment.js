@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {Dimensions, StyleSheet, TextInput, KeyboardAvoidingView, Animated, Keyboard, ScrollView, TouchableOpacity, ActivityIndicator} from 'react-native';
-//import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Dimensions, StyleSheet, Image, KeyboardAvoidingView, Animated, Keyboard, TouchableOpacity, ScrollView, ActivityIndicator, TextInput, Alert} from 'react-native';
 import {Button, Text, Block,Card ,Badge, Input, Divider} from '../components';
 import {theme, mocks} from '../constants';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -8,35 +7,28 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 
 const { width, height} = Dimensions.get('window')
-var board = '';
-var current_id = '';
-var current_stu_id = '';
-var current_bno = '';
+var goods ='';
+var goods_num='';
+var current_id='';
+var current_stu_id='';
 
-export default class Writing extends Component{
-
-static navigationOptions = ({}) => {
-    
-}
+export default class GoodsComment extends Component{
+static navigationOptions = ({navigation}) => ({
+   
+})
     state={
-        goods_detail: '',
-        jjim: false,
-        stu_id: '',
+        loading: false,
+        comments_info: '',
+        state: true,
         comment: '',
-        loading: '',
-        comments_info : '',
-        rerender: '',
     }
     componentDidMount(){
-        this.loadComment();
+        this.loadGoodsComment();
+        //this.loadStuID();
     }
 
-    handleComment = () => {
-        this.loadComment();
-    }
-
-    loadComment = async() => {
-        await axios.get('http://192.168.35.141:5000/api/comments?bno='+current_bno)
+    loadGoodsComment = async() => {
+        await axios.get('http://192.168.35.141:5000/api/goods/comment?gno='+goods_num)
         .then(res => {
             const comments = res.data;
             this.setState({ comments_info: comments});
@@ -47,49 +39,32 @@ static navigationOptions = ({}) => {
         })
     }
 
+    handleChange = () => {
+        this.setState({ comment: '', loading:false});
+        this.loadGoodsComment();
+    }
+
     addComment = async() => {
-        await axios.post('http://192.168.35.141:5000/api/comments', {
+        await axios.post('http://192.168.35.141:5000/api/goods/comment', {
             comment: this.state.comment,
             stu_id: current_stu_id,
-            bno: current_bno,
+            Gno: goods_num,
         })
         .then(function (res) {
             
         })
         .finally(() => {
-            this.handleComment();
-            this.setState({ loading: false, comment: '' })
+            this.handleChange();
         })
     }
 
-    renderWriteComment = () => {
-        return(
-            <Block  style={[styles.footer, {marginBottom:20, justifyContent:'center', borderRadius:10}]}>
-                <Block style={{marginLeft:10}}>
-                    <TextInput 
-                        placeholder='Leave a comment...'
-                        style={{height:50, marginBottom:10}}
-                        defaultValue={this.state.comment}
-                        onChangeText={text => this.setState({ comment: text})}
-                        multiline={true}
-                    />
-                </Block>
-                <Block style={styles.icon}>
-                    <TouchableOpacity
-                        onPress={() => this.addComment()}
-                    >
-                        <FontAwesome name="send-o" size={27} color='#9c2828'/>
-                    </TouchableOpacity>
-                </Block>
-            </Block>
-        )
-    }
+    
 
     renderComment = (info) => {
         return(
-            <Block>
+            <Block style={{marginLeft: 10}}>
                 <Block row center style={{marginBottom:3}}>
-                    <FontAwesome name="user-circle-o" size={25} color='#ac9dc9' style={{marginRight:10}}/>
+                    <FontAwesome name="user-circle-o" size={25} color='#845df0' style={{marginRight:10}}/>
                     <Text bold>{info.stu_id}</Text>
                 </Block>
                 <Block flex={false} col>
@@ -102,14 +77,37 @@ static navigationOptions = ({}) => {
         )
     }
 
+    renderWriteComment = () => {
+        return(
+            <Block  style={[styles.footer, {marginBottom:20, justifyContent:'center', borderRadius:10}]}>
+                <Block style={{marginLeft:10}}>
+                    <TextInput 
+                        placeholder='Leave a goods comment,,,'
+                        style={{height:50, marginBottom:10}}
+                        defaultValue={this.state.comment}
+                        onChangeText={text => this.setState({ comment: text})}
+                        multiline={true}
+                    />
+                </Block>
+                <Block style={styles.icon}>
+                    <TouchableOpacity
+                        onPress={() => this.addComment()}
+                    >
+                        <FontAwesome name="send-o" size={27} color='#845df0'/>
+                    </TouchableOpacity>
+                </Block>
+            </Block>
+        )
+    }
+
     render(){
         const { product, navigation } = this.props;
-        board = navigation.getParam('board');
-        current_bno = board.bno;
+        goods = navigation.getParam('goods');
         current_id = navigation.getParam('current_id');
+        goods_num = goods.Gno;
         current_stu_id = current_id[0].stu_id;
-        console.log(current_bno);
-
+        console.log(goods_num);
+        console.log(current_stu_id);
         if(!this.state.loading){
             return(
                 <Block center middle style={{marginTop: height/5}}>
@@ -118,39 +116,21 @@ static navigationOptions = ({}) => {
             )
         }
         else{
-
             return(
                 <Block style={{backgroundColor:'white'}}>
                     <ScrollView showsVerticalScrollIndicator = {false}>
-                        
-
-                        <Block style={styles.product}>
-                            <Block style={{marginBottom: 20, alignItems:'center'}} row >
-                                <FontAwesome name="user-circle-o" size={40} color='#9b93ab' style={{marginRight:20}}/>
-                                {board.anonymity === 1 ? <Text bold h3>anonymous</Text> : <Text bold h3>{board.stu_id}</Text>}
-                                
+                    
+                        {this.state.comments_info ? this.state.comments_info.map(cinfo =>(
+                            <Block>
+                                {this.renderComment(cinfo)}
                             </Block>
-                            <Text h1 bold style={{marginBottom:10}}>{board.btitle}</Text>
-                            <Block flex={false} row margin={[theme.sizes.base, 0]}>
-                            <Text style={{fontSize:20}}>{board.bcontent}</Text>
-                            </Block>
+                        )) : null}
                             
-                            <Divider margin={[theme.sizes.padding * 0.9, 0]} />
-                            
-                            {this.state.comments_info ? this.state.comments_info.map(cinfo =>(
-                                <Block>
-                                    {this.renderComment(cinfo)}
-                                </Block>
-
-                            )) : null}
-                            <Block style={{marginBottom:40}}>
-
-                            </Block>
-                        </Block>
                     </ScrollView>
                     {this.renderWriteComment()}
+                    <Block style={{marginBottom:60}}/>
                 </Block>
-            )
+            )   
         }
     }
 }
@@ -173,13 +153,14 @@ const styles = StyleSheet.create({
         marginRight: theme.sizes.base * 0.5,
     },
     footer: {
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#ffffff',
         position: 'absolute',
         bottom: 0,
         right:0,
         left:0,
         overflow: 'visible',
-        
+        borderWidth: 1.5,
+        borderColor: '#845df0',
         justifyContent: 'center',
         height: height * 0.04,
         width,
@@ -190,14 +171,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         bottom: 10,
         right:20,
-    },
-    input : {
-        
-        height:20,
-        borderBottomColor: theme.colors.gray2,
-        borderRadius: 0,
-        borderWidth: 0,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-
     },
 })

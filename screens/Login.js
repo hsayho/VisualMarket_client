@@ -38,7 +38,7 @@ export default class Login extends Component{
         const {id, password} = this.state;
         const errors = [];
         this.setState({ loading: true})
-        await axios.get('http://10.0.2.2:5000/api/members?id='+id+'&password='+password)
+        await axios.get('http://192.168.35.141:5000/api/members?id='+id+'&password='+password)
         .then(function (res) {
             result_id = res.data[0].mem_id;
             result_password = res.data[0].mem_password;
@@ -76,7 +76,7 @@ export default class Login extends Component{
         return(
             <KeyboardAvoidingView style={styles.login}>
                 <Block padding={[0, theme.sizes.base * 2]} style={{backgroundColor: 'white'}}>
-                    <Text h1 bold>로그인</Text>
+                    <Text h1 bold>LOGIN</Text>
                     <Block middle>
                         <Input
                             error={hasErrors('id')}
@@ -97,11 +97,11 @@ export default class Login extends Component{
                         <Button gradient onPress={() => {this.handleLogin()}}>
                             {loading ? 
                                 <ActivityIndicator size="small" color="white" />:
-                            <Text bold white center>로그인</Text>
+                            <Text bold white center>Login</Text>
                         }   
                         </Button>
                         <Button onPress={() => {navigation.navigate('Forgot')}}>
-                            <Text center caption gray style={{textDecorationLine: 'underline'}}>비밀번호를 잊어버리셨습니까?</Text>
+                            <Text center caption gray style={{textDecorationLine: 'underline'}}>Forgot Password?</Text>
                         </Button>
                     </Block>
                 </Block>

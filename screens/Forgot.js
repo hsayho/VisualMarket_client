@@ -22,7 +22,7 @@ export default class Forgot extends Component{
         this.setState({ loading: true})
 
         Keyboard.dismiss(); // 키보드 사라짐
-        await axios.get('http://10.0.2.2:5000/api/members_password?stu_id='+student_id+'&id='+id)
+        await axios.get('http://192.168.35.141:5000/api/members_password?stu_id='+student_id+'&id='+id)
         .then(function(res) {
             if(res.data.length>0){
                 console.log(res.data);
@@ -45,7 +45,7 @@ export default class Forgot extends Component{
         this.setState({ errors, loading: false});
 
         if(result.length>0){
-            await axios.put('http://10.0.2.2:5000/api/members/password?stu_id='+student_id)
+            await axios.put('http://192.168.35.141:5000/api/members/password?stu_id='+student_id)
             .then(function(res) {
             if(res.data.length>0){
                 
@@ -54,11 +54,11 @@ export default class Forgot extends Component{
         });
 
             Alert.alert(
-                '비밀번호 초기화',
-                '회원님의 학번으로 비밀번호가 초기화 되었습니다.',
+                'Initialization',
+                'Your password has been reset to your student number.',
                 [
                     {
-                        text: '확인', onPress:() => {
+                        text: 'Ok', onPress:() => {
                             navigation.navigate('Login')
                         }
                     }
@@ -67,11 +67,11 @@ export default class Forgot extends Component{
             )
         } else{
             Alert.alert(
-                '정보 불일치',
-                '일치하는 정보가 없습니다.',
+                'It does not match.',
+                'There is no matching information..',
                 [
                     {
-                        text: '다시 시도', 
+                        text: 'try again', 
                     }
                 ],
                 {cancelable : false}
@@ -89,7 +89,7 @@ export default class Forgot extends Component{
         return(
             <KeyboardAvoidingView style={styles.forgot}>
                 <Block style={{backgroundColor:'white'}} padding={[0, theme.sizes.base * 2]}>
-                <Text h1 bold>비밀번호 찾기</Text>
+                <Text h1 bold>Forgot Password</Text>
                     <Block middle>
                         <Input
                             error={hasErrors('student_id')}
@@ -108,11 +108,11 @@ export default class Forgot extends Component{
                         <Button gradient onPress={() => {this.handleFind()}}>
                             {loading ? 
                                 <ActivityIndicator size="small" color="white" />:
-                            <Text bold white center>비밀번호 찾기</Text>
+                            <Text bold white center>Reset Password</Text>
                         }   
                         </Button>
                         <Button onPress={() => {navigation.goBack()}}>
-                            <Text center caption gray style={{textDecorationLine: 'underline'}}>이전 화면으로 돌아가기</Text>
+                            <Text center caption gray style={{textDecorationLine: 'underline'}}>back to page</Text>
                         </Button>
                     </Block>
                 </Block>

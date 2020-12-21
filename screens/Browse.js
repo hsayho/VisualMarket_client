@@ -101,7 +101,8 @@ export default class Browse extends Component{
         const {profile, navigation, categories} = this.props;
         const {page} = this.state;
         current_id = navigation.getParam('current_id');
-        console.log('현재 접속된 아이디 : ' + current_id);
+        console.log('브라우저 들어옴');
+        console.log(current_id);
         const tabs = [
             {
                 title: 'Home',
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: theme.colors.gray2,
         marginVertical: theme.sizes.base,
-        marginHorizontal: theme.sizes.base * 6,
+        marginHorizontal: theme.sizes.base * 4.5,
     },
     active: {
         borderBottomColor: '#7577e4',

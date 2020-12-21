@@ -80,7 +80,7 @@ export default class AddGoods extends Component{
         var confirm_result='';
         const {stu_id} = this.state;
         
-        await axios.get('http://10.0.2.2:5000/api/members-studentID?id='+current_id)
+        await axios.get('http://192.168.35.141:5000/api/members-studentID?id='+current_id)
         .then(function(res){
             console.log(res.data);
             
@@ -91,11 +91,11 @@ export default class AddGoods extends Component{
             }
         })
         if(parseInt(confirm_result) === parseInt(stu_id)){ 
-            alert('학번 확인이 완료되었습니다!');
+            alert('Confirm completed!');
             
         }
         else{
-            alert('학번이 일치하지 않습니다.');
+            alert('It does not match.');
             this.setState({stu_id:''});
             console.log('리렌더링이 완료!');
         }
@@ -122,7 +122,7 @@ export default class AddGoods extends Component{
         formData.append('state', true);
 
         axios({
-            url: 'http://10.0.2.2:5000/api/upload',
+            url: 'http://192.168.35.141:5000/api/upload',
             method: 'POST',
             data: formData,
             headers: {
@@ -173,11 +173,11 @@ export default class AddGoods extends Component{
     
             if(!errors.length){ 
                 Alert.alert(
-                    '등록 완료!',
-                    '기입한 정보로 물품이 성공적으로 등록되었습니다!',
+                    'Completed!',
+                    'Goods has been successfully registered!',
                     [
                         {
-                            text: '확인', onPress:() => {
+                            text: 'Ok', onPress:() => {
                                 navigation.navigate('Browse')
                             }
                         }
@@ -187,11 +187,11 @@ export default class AddGoods extends Component{
                 
             } else{
                 Alert.alert(
-                    '미입력 사항',
-                    '입력하지 않은 사항이 있습니다.',
+                    'Non-input',
+                    'There are non-input items',
                     [
                         {
-                            text: '다시 시도', 
+                            text: 'try again', 
                         }
                     ],
                     {cancelable : false}
@@ -213,7 +213,7 @@ export default class AddGoods extends Component{
         return(
             <KeyboardAvoidingView style={styles.signup}>
                 <Block style={{backgroundColor:'white',}} padding={[0, theme.sizes.base * 2]}>
-                <Text h1 bold>중고거래 글쓰기</Text>
+                <Text h1 bold>Register Used Item</Text>
                     <ScrollView>
                         <Block middle style={{marginTop: 15}}>
                             <Block row>
@@ -225,7 +225,7 @@ export default class AddGoods extends Component{
                             </Block>
                             <Input
                                 error={hasErrors('title')}
-                                label="글 제목"
+                                label="Title"
                                 style={[styles.input, hasErrors('title')]}
                                 defaultValue={this.state.title}
                                 onChangeText={text => this.setState({ title: text})}
@@ -233,16 +233,16 @@ export default class AddGoods extends Component{
                             <Block margin={[theme.sizes.base, 0]}>
                                 <Input
                                     error={hasErrors('stu_id')}
-                                    label="학번"
+                                    label="Student Number"
                                     style={[styles.input, hasErrors('stu_id')]}
                                     defaultValue={this.state.stu_id}
                                     onChangeText={text => this.setState({ stu_id: text})}
                                 />
                                 <Button gradient style={styles.confirmBtn} onPress={() => this.handleConfirm()}>
-                                    <Text white center style={{fontSize:12}}>학번 확인</Text>
+                                    <Text white center style={{fontSize:12}}>Confirm</Text>
                                 </Button>
                             </Block>
-                            <Text gray>내용</Text>
+                            <Text gray>Content</Text>
                             <TextInput 
                                 error={hasErrors('contents')}
                                 style={[styles.input, hasErrors('contents'),{height:height/3}]}
@@ -251,9 +251,8 @@ export default class AddGoods extends Component{
                                 multiline={true}
                             />
                             <Input
-                                secure
                                 error={hasErrors('price')}
-                                label="가격"
+                                label="Price"
                                 style={[styles.input, hasErrors('price')]}
                                 defaultValue={this.state.price}
                                 onChangeText={text => this.setState({ price: text})}
@@ -263,11 +262,11 @@ export default class AddGoods extends Component{
                             <Button gradient onPress={() => {this.handleEnroll()}}>
                                 {loading ? 
                                     <ActivityIndicator size="small" color="white" />:
-                                <Text bold white center>완료</Text>
+                                <Text bold white center>Register</Text>
                             }   
                             </Button>
                             <Button onPress={() => {navigation.goBack()}}>
-                                <Text center caption gray style={{textDecorationLine: 'underline'}}>이전 화면으로 돌아가기</Text>
+                                <Text center caption gray style={{textDecorationLine: 'underline'}}>back to page</Text>
                             </Button>
                         </Block>
                     </ScrollView>

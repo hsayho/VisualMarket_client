@@ -13,9 +13,18 @@ var current_id='';
 var current_stu_id='';
 
 export default class Product extends Component{
-static navigationOptions = ({}) => {
-    
-}
+static navigationOptions = ({navigation}) => ({
+    headerRight: (
+        <Block style={{justifyContent:'center', marginRight:5}}>
+            <TouchableOpacity onPress={() => {navigation.navigate('GoodsComment', {current_id: current_id, goods: goods})}} >
+                <FontAwesome name="comments-o" size={35} color='#b3b0b5'/>
+            </TouchableOpacity>
+        </Block>
+    ),
+    headerRightContainerStyle: {
+        paddingRight: 10,
+    }
+})
     state={
         goods_detail: '',
         jjim: false,
@@ -42,7 +51,7 @@ static navigationOptions = ({}) => {
 
     loadGoodsDetail = async() => {
         const { stu_id } = current_stu_id;
-        await axios.get('http://10.0.2.2:5000/api/goods/detail?gno='+goods_num)
+        await axios.get('http://192.168.35.141:5000/api/goods/detail?gno='+goods_num)
         .then(res => {
             const detail = res.data;
             this.setState({ goods_detail: detail});
@@ -61,7 +70,7 @@ static navigationOptions = ({}) => {
         const {navigation} = this.props;
         console.log('찜 학번 : '+current_stu_id + '찜 상품 번호 : ' + goods_num);
         if(this.state.jjim){
-            await axios.delete('http://10.0.2.2:5000/api/jjim',{
+            await axios.delete('http://192.168.35.141:5000/api/jjim',{
                 data: {
                     stu_id: current_stu_id,
                     gno: goods_num
@@ -78,7 +87,7 @@ static navigationOptions = ({}) => {
             })
         }
         else{
-            await axios.post('http://10.0.2.2:5000/api/jjim',{
+            await axios.post('http://192.168.35.141:5000/api/jjim',{
                 stu_id: current_stu_id,
                 gno: goods_num,
             })
@@ -96,7 +105,7 @@ static navigationOptions = ({}) => {
 
     renderLike = async() => {
         
-        await axios.get('http://10.0.2.2:5000/api/goods/like?stuid='+current_stu_id+'&gno='+goods_num)
+        await axios.get('http://192.168.35.141:5000/api/goods/like?stuid='+current_stu_id+'&gno='+goods_num)
         .then(res => {
             const len = res.data;
             if(len.length>0){
@@ -111,7 +120,7 @@ static navigationOptions = ({}) => {
 
     completePurchase = async() => {
         const {navigation} = this.props;
-        await axios.put('http://10.0.2.2:5000/api/goods?gno='+goods_num)
+        await axios.put('http://192.168.35.141:5000/api/goods?gno='+goods_num)
         .then(res => {
             
         })
@@ -124,7 +133,7 @@ static navigationOptions = ({}) => {
         return(
             <Block>
                 <Image 
-                    source={{uri:'http://10.0.2.2:5000'+goods.image}}
+                    source={{uri:'http://192.168.35.141:5000'+goods.image}}
                     style={{width, height : height / 2}}
                     resizeMode= 'contain'
                     
@@ -138,12 +147,12 @@ static navigationOptions = ({}) => {
         return(
             <Block style={styles.footer} row>
                 <Button
-                    gradient style={{width: 200, marginLeft:35}}
+                    gradient style={{width: 200, marginLeft:20}}
                     onPress={() => this.completePurchase()}
                  >
-                    <Text bold white center>{goods.price}원 구매하기</Text>
+                    <Text bold white center>{goods.price}₩ Purchase</Text>
                 </Button>
-                <Block flex={false} style={{marginLeft:20}}>
+                <Block flex={false} style={{marginLeft:40}}>
                     <TouchableOpacity onPress={() => this.setJjim()}>
                         {this.state.jjim === true ? <FontAwesome name="heart" size={30} color='red'/> 
                         : <FontAwesome name="heart-o" size={30} color='black'/>}
@@ -180,6 +189,7 @@ static navigationOptions = ({}) => {
         current_id = navigation.getParam('current_id');
         current_stu_id = current_id[0].stu_id;
         goods_num = goods.Gno;
+        console.log(current_id);
         console.log(goods_num);
         console.log(current_stu_id);
 
@@ -199,7 +209,7 @@ static navigationOptions = ({}) => {
                         <Block style={styles.product}>
                             <Text h2 bold>{goods.title}</Text>
                             <Block flex={false} row margin={[theme.sizes.base, 0]}>
-                            <Text>판매자 {goods.seller_id}</Text>
+                            <Text>Seller {goods.seller_id}</Text>
                             </Block>
                             <Text light height={22} align="justify" gray>{goods.content}</Text>
                             <Divider margin={[theme.sizes.padding * 0.9, 0]} />

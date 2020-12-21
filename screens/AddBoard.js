@@ -39,7 +39,7 @@ export default class AddBoard extends Component{
 
         Keyboard.dismiss(); // 키보드 사라짐
 
-        await axios.post('http://10.0.2.2:5000/api/board/upload',{
+        await axios.post('http://192.168.35.141:5000/api/board/upload',{
             title: this.state.title,
             stu_id: this.state.stu_id,
             contents: this.state.contents,
@@ -68,11 +68,11 @@ export default class AddBoard extends Component{
     
             if(!errors.length){ 
                 Alert.alert(
-                    '글 작성 완료!',
-                    '성공적으로 글 작성이 완료되었습니다.',
+                    'Completed!',
+                    'Writing completed succesfully!',
                     [
                         {
-                            text: '확인', onPress:() => {
+                            text: 'Ok', onPress:() => {
                                 navigation.navigate('Browse',{current_id: current_id});
                             }
                         }
@@ -82,11 +82,11 @@ export default class AddBoard extends Component{
                 
             } else{
                 Alert.alert(
-                    '미입력 사항',
-                    '입력하지 않은 사항이 있습니다.',
+                    'Non-input',
+                    'There are non-input items',
                     [
                         {
-                            text: '다시 시도', 
+                            text: 'try again', 
                         }
                     ],
                     {cancelable : false}
@@ -108,13 +108,13 @@ export default class AddBoard extends Component{
         return(
             <KeyboardAvoidingView style={styles.signup}>
                 <Block style={{backgroundColor:'white',}} padding={[0, theme.sizes.base * 2]}>
-                <Text h1 bold>자유 게시판 글쓰기</Text>
+                <Text h1 bold>Writing Bulletin Board</Text>
                     <ScrollView>
                         <Block middle style={{marginTop: 15}}>
                             
                             <Input
                                 error={hasErrors('title')}
-                                label="글 제목"
+                                label="Title"
                                 style={[styles.input, hasErrors('title')]}
                                 defaultValue={this.state.title}
                                 onChangeText={text => this.setState({ title: text})}
@@ -122,14 +122,14 @@ export default class AddBoard extends Component{
                             <Block margin={[theme.sizes.base, 0]}>
                                 <Input
                                     error={hasErrors('stu_id')}
-                                    label="학번"
+                                    label="Student Number"
                                     style={[styles.input, hasErrors('stu_id')]}
                                     defaultValue={this.state.stu_id}
                                     onChangeText={text => this.setState({ stu_id: text})}
                                 />
                                 
                             </Block>
-                            <Text gray>내용</Text>
+                            <Text gray>Content</Text>
                             <TextInput 
                                 error={hasErrors('contents')}
                                 style={[styles.input, hasErrors('contents'),{height:height/3}]}
@@ -141,7 +141,7 @@ export default class AddBoard extends Component{
                             <Button gradient onPress={() => {this.handleEnroll()}}>
                                 {loading ? 
                                     <ActivityIndicator size="small" color="white" />:
-                                <Text bold white center>작성 완료</Text>
+                                <Text bold white center>Submit</Text>
                             }   
                             </Button>
                             <Block center middle row>
@@ -150,10 +150,10 @@ export default class AddBoard extends Component{
                                     onValueChange = {this.setSelection}
                                     tintColors='#7577E4'
                                 />
-                                <Text>익명</Text>
+                                <Text>anonymous</Text>
                             </Block>
                             <Button onPress={() => {navigation.goBack()}}>
-                                <Text center caption gray style={{textDecorationLine: 'underline'}}>이전 화면으로 돌아가기</Text>
+                                <Text center caption gray style={{textDecorationLine: 'underline'}}>back to page</Text>
                             </Button>
                             
                         </Block>

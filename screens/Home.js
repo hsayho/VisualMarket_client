@@ -8,6 +8,7 @@ import axios from 'axios';
 
 const { width, height} = Dimensions.get('window')
 var current_id='';
+var result = '';
 
 export default class Home extends Component{
 
@@ -28,7 +29,7 @@ export default class Home extends Component{
     }
 
     loadMemberInfo = async() => {
-        await axios.get('http://10.0.2.2:5000/api/members-studentID?id='+current_id)
+        await axios.get('http://192.168.35.141:5000/api/members-studentID?id='+current_id)
         .then(res => {
             const members = res.data;
             this.setState({ members: members});
@@ -36,7 +37,7 @@ export default class Home extends Component{
     }
 
     loadGoodsInfo = async() => {
-        await axios.get('http://10.0.2.2:5000/api/goods')
+        await axios.get('http://192.168.35.141:5000/api/goods')
         .then(res => {
             const goods = res.data;
             this.setState({ goods_info: goods});
@@ -47,8 +48,61 @@ export default class Home extends Component{
         })
     }
 
-    renderGoods = (goods) => {
+    timeBefore = (info) => {
+        var now = new Date(); 
+        var writeDay = new Date(info);
+        console.log(now);
+        console.log(now.getFullYear());
+        console.log(writeDay);
+        console.log(writeDay.getFullYear());
+        //글쓴 시간 
         
+     	//또는 파라미터로 시간을 넘겨받아서 계산할 수도 있음..
+        
+         var minus;
+         var hour, sec, min, day;
+         
+        //현재 년도랑 글쓴시간의 년도 비교 
+        if(now.getFullYear() > writeDay.getFullYear()){
+            minus= now.getFullYear()-writeDay.getFullYear();
+            result = minus+'year before';
+        }else if(now.getMonth() > writeDay.getMonth()){
+        //년도가 같을 경우 달을 비교해서 출력
+            minus= now.getMonth()-writeDay.getMonth();
+            result = minus+'mon before';
+        }else if(now.getDate() > writeDay.getDate()){
+       	//같은 달일 경우 일을 계산
+            minus= now.getDate()-writeDay.getDate();
+            result = minus+'days before';
+        }else if(now.getDate() == writeDay.getDate()){
+        //당일인 경우에는 
+            var nowTime = now.getTime();
+            var writeTime = writeDay.getTime();
+            if(nowTime>writeTime){
+            //시간을 비교
+                sec =parseInt(nowTime - writeTime) / 1000;
+                day  = parseInt(sec/60/60/24);
+                sec = (sec - (day * 60 * 60 * 24));
+                hour = parseInt(sec/60/60);
+                sec = (sec - (hour*60*60));
+                min = parseInt(sec/60);
+                sec = parseInt(sec-(min*60));
+                if(hour>0){
+                //몇시간전인지
+                result = hour+'h before';
+                }else if(min>0){
+                //몇분전인지
+                result = min+'min before';
+                }else if(sec>0){
+                //몇초전인지 계산
+                result = sec+'sec before';
+                }
+            }
+        }
+    }
+
+    renderGoods = (goods) => {
+        this.timeBefore(goods.DateInserted);
         
         console.log(goods.Gno);
         return(
@@ -61,14 +115,17 @@ export default class Home extends Component{
                         }
                     }
                     >
-                    <Card shadow middle style={{height:120, width:width,}}>
+                    <Card shadow middle style={{height:120, width:width*1.2,}}>
                         <Badge color="rgba(117,119,228,0.20" size={120} style={{}}>
                             <Block row center>
-                                <Image style={{width:100, height:100,borderRadius: 10, marginLeft:50, marginRight:30}} source={{uri:'http://10.0.2.2:5000'+goods.image}}/>
+                                <Block flex={false} center>
+                                <Image style={{width:100, height:100,borderRadius: 10, marginLeft:90, marginRight:30}} source={{uri:'http://192.168.35.141:5000'+goods.image}}/>
+                                </Block>
                                 <Block flex={false} col>
-                                    <Text style={{fontSize:16}}>{goods.title}</Text>
+                                    <Text bold style={{fontSize:16}}>{goods.title}</Text>
                                     <Text caption gray style={{marginBottom:5}}>{goods.seller_id}</Text>
-                                    <Text bold>{goods.price}원</Text>
+                                    <Text semibold style={{marginBottom:5}}>{goods.price}₩</Text>
+                                    <Text caption gray>{result}</Text>
                                 </Block>
                             </Block>
                         
@@ -122,7 +179,7 @@ export default class Home extends Component{
                                 </Block>
                             
                         ))}
-                        <Block style={{marginBottom:50}}></Block>
+                        <Block style={{marginBottom:70}}></Block>
 
                     </ScrollView>
                 </Block>

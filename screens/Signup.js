@@ -18,7 +18,7 @@ export default class Signup extends Component{
     handleConfirm = async() => {
         var confirm_result='';
         const {id} = this.state;
-        await axios.get('http://10.0.2.2:5000/api/members_id?id='+id)
+        await axios.get('http://192.168.35.141:5000/api/members_id?id='+id)
         .then(function(res){
             console.log(res.data);
             
@@ -28,12 +28,12 @@ export default class Signup extends Component{
             }
         })
         if(confirm_result == id){ 
-            alert('이미 사용중인 아이디입니다.');
+            alert('ID already in use');
             this.setState({id:''});
             console.log('리렌더링이 완료!');
         }
         else{
-            alert('사용 가능한 아이디입니다!');
+            alert('Available ID!');
         }
     }
 
@@ -46,7 +46,7 @@ export default class Signup extends Component{
 
         Keyboard.dismiss(); // 키보드 사라짐
 
-        await axios.post('http://10.0.2.2:5000/api/members', {
+        await axios.post('http://192.168.35.141:5000/api/members', {
             id: this.state.id,
             stu_id: this.state.stu_id,
             username: this.state.username,
@@ -66,7 +66,7 @@ export default class Signup extends Component{
                 $('#studnetID').focus();
             }
             else if(res.data.status == 'error005'){
-                alert('회원가입 실패');
+                alert('Failed in Sign up');
             }
 
         })
@@ -94,11 +94,11 @@ export default class Signup extends Component{
     
             if(!errors.length){ 
                 Alert.alert(
-                    '회원가입 완료!',
-                    '가입한 계정으로 로그인해주세요!',
+                    'Completed!',
+                    'Please log in with your new account!',
                     [
                         {
-                            text: '확인', onPress:() => {
+                            text: 'Ok', onPress:() => {
                                 navigation.navigate('Login')
                             }
                         }
@@ -108,11 +108,11 @@ export default class Signup extends Component{
                 
             } else{
                 Alert.alert(
-                    '정보 불일치',
-                    '일치하는 정보가 없습니다.',
+                    'It does not match',
+                    'There is no matching information',
                     [
                         {
-                            text: '다시 시도', 
+                            text: 'try again', 
                         }
                     ],
                     {cancelable : false}
@@ -132,8 +132,8 @@ export default class Signup extends Component{
         return(
             <KeyboardAvoidingView style={styles.signup}>
                 <Block style={{backgroundColor:'white'}} padding={[0, theme.sizes.base * 2]}>
-                <Text h1 bold>회원가입</Text>
-                    <Block middle>
+                <Text h1 bold>Sign Up</Text>
+                    <Block middle flex={0.88}>
                         <Block margin={[theme.sizes.base, 0]}>
                             <Input
                                 error={hasErrors('id')}
@@ -143,7 +143,7 @@ export default class Signup extends Component{
                                 onChangeText={text => this.setState({ id: text})}
                             />
                             <Button gradient style={styles.confirmBtn} onPress={() => this.handleConfirm()}>
-                                <Text white center>ID 확인</Text>
+                                <Text white center>confirm</Text>
                             </Button>
                         </Block>
                         <Input
@@ -172,11 +172,11 @@ export default class Signup extends Component{
                         <Button gradient onPress={() => {this.handleSignup()}}>
                             {loading ? 
                                 <ActivityIndicator size="small" color="white" />:
-                            <Text bold white center>회원가입</Text>
+                            <Text bold white center>Sign Up</Text>
                         }   
                         </Button>
                         <Button onPress={() => {navigation.goBack()}}>
-                            <Text center caption gray style={{textDecorationLine: 'underline'}}>이전 화면으로 돌아가기</Text>
+                            <Text center caption gray style={{textDecorationLine: 'underline'}}>back to page</Text>
                         </Button>
                     </Block>
                 </Block>

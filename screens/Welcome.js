@@ -75,7 +75,7 @@ export default class Welcome extends Component{
                     <Text h2 center bold>For Cbnu SW students.
                         <Text h2 color="#7577E4">Visual Market!</Text>
                     </Text>
-                    <Text h4 gray style={{marginTop : theme.sizes.padding / 2}}>소프트웨어학과 학생들을 위한 쇼핑 플랫폼</Text>
+                    <Text h4 gray style={{marginTop : theme.sizes.padding / 2}}>A shopping platform for SW students</Text>
                 </Block>
                 <Block center middle>
                     {this.renderIllustrations()}
@@ -83,10 +83,10 @@ export default class Welcome extends Component{
                 </Block>
                 <Block middle flex={0.5} margin={[0, theme.sizes.padding * 2]}>
                     <Button gradient onPress={() => navigation.navigate('Login')}>
-                        <Text center semibold white>이용하기</Text>
+                        <Text center semibold white>START</Text>
                     </Button>
                     <Button onPress={() => navigation.navigate('Signup')}>
-                        <Text center semibold>회원가입</Text>
+                        <Text center semibold>JOIN US</Text>
                     </Button>
                     <Text center caption gray>Created by Drawable Data</Text>
                 </Block>
@@ -98,7 +98,7 @@ export default class Welcome extends Component{
 
 Welcome.defaultProps = {
     illustrations: [
-        {id : 1, source : require('../assets/images/illustration_1.png')},
+        {id : 1, source : require('../assets/images/vsmarket_welcome.png')},
         {id : 2, source : require('../assets/images/illustration_2.png')},
         {id : 3, source : require('../assets/images/illustration_3.png')},
     ]

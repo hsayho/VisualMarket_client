@@ -30,7 +30,7 @@ export default class MyProduct extends Component{
 
     loadMemberInfo = async() => {
         
-        await axios.get('http://10.0.2.2:5000/api/members-studentID?id='+current_id)
+        await axios.get('http://192.168.35.141:5000/api/members-studentID?id='+current_id)
         .then(res => {
             const members = res.data;
             this.setState({ members: members});
@@ -54,29 +54,20 @@ export default class MyProduct extends Component{
     loadJjimList = async() => {
         var isJjims='';
         var len='';
-        await axios.get('http://10.0.2.2:5000/api/JjimList?id='+stu_id)
+        await axios.get('http://192.168.35.141:5000/api/JjimList?id='+stu_id)
         .then(res => {
             isJjims = res.data;
             console.log('찜 목록 불러오기 완료');
-            console.log(isJjims);
-            console.log(len);
             len = isJjims.length;
+            this.setState({ jjims: isJjims });
+            console.log(this.state.jjims);
+            console.log('길이');
+            console.log(len);
+           
         })
-
-        if(len>0){
-            await axios.get('http://10.0.2.2:5000/api/Jjimgoods?gno='+isJjims[0].Gno)
-            .then(res => {
-                const jjims = res.data;
-                this.setState({ jjims: jjims});
-            })
-            .finally(() => {
-                this.setState({ loading:true });
-            })
-            
-        }
-        else{
-            this.setState({ loading:true});
-        }
+        .finally(() => {
+            this.setState({ loading: true });
+        })
     }
 
     renderJjims = (goods) => {
@@ -105,11 +96,11 @@ export default class MyProduct extends Component{
                     <Card shadow middle style={{height:120, width:width,}}>
                         <Badge color="rgba(117,119,228,0.20" size={120} style={{}}>
                             <Block row center>
-                                <Image style={{width:100, height:100,borderRadius: 10, marginLeft:50, marginRight:30}} source={{uri:'http://10.0.2.2:5000'+goods.image}}/>
+                                <Image style={{width:100, height:100,borderRadius: 10, marginLeft:50, marginRight:30}} source={{uri:'http://192.168.35.141:5000'+goods.image}}/>
                                 <Block flex={false} col>
                                     <Text style={{fontSize:16}}>{goods.title}</Text>
                                     <Text caption gray style={{marginBottom:5}}>{goods.seller_id}</Text>
-                                    <Text bold>{goods.price}원</Text>
+                                    <Text bold>{goods.price}₩</Text>
                                 </Block>
                             </Block>
                         
