@@ -26,3 +26,12 @@
 ScreenShots
 ----------------
 
+<div>
+  <img width="250" alt="메인" src="https://user-images.githubusercontent.com/55680343/103493836-02347880-4e77-11eb-9427-009b3c200724.PNG">
+  <img width="250" alt="메인2" src="https://user-images.githubusercontent.com/55680343/103493841-06f92c80-4e77-11eb-8821-2a96470e6303.PNG">
+  <img width="250" alt="구매화면" src="https://user-images.githubusercontent.com/55680343/103493844-111b2b00-4e77-11eb-9686-55440c5d22ac.PNG">
+  <img width="250" alt="등록화면" src="https://user-images.githubusercontent.com/55680343/103493845-14161b80-4e77-11eb-8060-e01b96ff0a23.PNG">
+  <img width="250" alt="게시판" src="https://user-images.githubusercontent.com/55680343/103493847-17110c00-4e77-11eb-9339-9d0eaa58448b.PNG">
+  <img width="250" alt="설정화면" src="https://user-images.githubusercontent.com/55680343/103493848-19736600-4e77-11eb-978d-224a82642dc9.PNG">
+
+</div>
